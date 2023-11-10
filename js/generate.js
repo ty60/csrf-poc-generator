@@ -6,8 +6,17 @@ $("#generate").click(function() {
 	var parameters = new Array();
 	var parametersKey = new Array();
 	var parametersValue = new Array();
+  var addSubmitScript = $('#scriptcheck').prop('checked');
 
-	requirements.method = headers[0].split(" ")[0];
+  requirements.reqMethod = headers[0].split(" ")[0];
+
+  if($('#getradio')[0].checked) {
+    requirements.method = "GET";
+  } else if ($('#postradio')[0].checked) {
+    requirements.method = "POST";
+  } else {
+    requirements.method = requirements.reqMethod;
+  }
 
 	for (var i = 0; i < headers.length; i++) {
 		if(i==0) {
@@ -28,10 +37,10 @@ $("#generate").click(function() {
 		}
 	}
 
-	if(requirements.method == "POST") {
+	if(requirements.reqMethod == "POST") {
 		parameters = data.split("&");
 	}
-	else if(requirements.method == "GET") {
+	else if(requirements.reqMethod == "GET") {
 		parameters = requirements.uri.split("?")[1].split("&");
 	}
 	for (var i = 0; i < parameters.length; i++) {
@@ -46,10 +55,10 @@ $("#generate").click(function() {
 	console.log(parametersValue);
 */
 
-	$("#poc").val(generateForm(requirements, parameters, parametersKey, parametersValue));
+	$("#poc").val(generateForm(requirements, parameters, parametersKey, parametersValue, addSubmitScript));
 });
 
-function generateForm(requirements, parameters, parametersKey, parametersValue) {
+function generateForm(requirements, parameters, parametersKey, parametersValue, addSubmitScript) {
 	
 	var form = "";
 	
@@ -61,6 +70,9 @@ function generateForm(requirements, parameters, parametersKey, parametersValue) 
 	}
 	form += "\t\t\t<input type=\"submit\" value=\"Submit\">\n";
 	form += "\t\t</form>\n";
+  if (addSubmitScript) {
+    form += "\t\t<script>document.forms[0].submit();</script>\n";
+  }
 	form += "\t</body>\n";
 	form += "<html>\n";
 	
